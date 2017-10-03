@@ -52,7 +52,6 @@ def on_click(x, y, button, pressed):
 	if button == mouse.Button.left:
 		MOUSE_LEFT_DOWN = pressed
 	elif button == mouse.Button.right and pressed:
-		print 1
 		MOUSE_RIGHT_DOWN = not MOUSE_RIGHT_DOWN
 
 def on_scroll(x, y, dx, dy):
@@ -63,6 +62,6 @@ def on_scroll(x, y, dx, dy):
 		GUN_TYPE += 1
 	print 'Weapon mode switched to %s' % GUN_PRESETS[GUN_TYPE]['name']
 
-# Collect events until released
+# listen
 with mouse.Listener(on_click=on_click, on_scroll=on_scroll) as listener:
     listener.join()
