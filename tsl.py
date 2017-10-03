@@ -2,32 +2,37 @@ import time, threading, random
 from pynput import mouse
 
 MOUSE_LEFT_DOWN = False
+MOUSE_RIGHT_DOWN = False
+
 GUN_TYPE = 0
 GUN_PRESETS = [
-	{ 'name': 'm4', 'value': 500 },
-	{ 'name': 'm16', 'value': 1000 },
-	{ 'name': 'AKM', 'value': 1500 },
-	{ 'name': 'UMP9', 'value': 900 },
-	{ 'name': 'Uzi', 'value': 1500 },
-	{ 'name': 'Groza', 'value': 1100 },
-	{ 'name': 'Vector', 'value': 1100}
+	{ 'name': 'm4', 'value': 5 },
+	{ 'name': 'm16', 'value': 5 },
+	{ 'name': 'AKM', 'value': 5 },
+	{ 'name': 'UMP9', 'value': 5 },
+	{ 'name': 'Uzi', 'value': 5 },
+	{ 'name': 'Groza', 'value': 5 },
+	{ 'name': 'Vector', 'value': 5 }
 ]
 
 controller = mouse.Controller()
 
 def move_mouse():
-	global MOUSE_LEFT_DOWN, GUN_PRESETS, GUN_TYPE
+	global MOUSE_LEFT_DOWN, MOUSE_RIGHT_DOWN, GUN_PRESETS, GUN_TYPE
 	cooldown = 0.01
 	while True:
-		if MOUSE_LEFT_DOWN:
-			distance = GUN_PRESETS[GUN_TYPE]['value'] * cooldown
-			controller.move(0, int(distance + random.uniform(-0.3, 0.3)))
-			cooldown = random.uniform(0, 0.05)
+		if MOUSE_LEFT_DOWN and MOUSE_RIGHT_DOWN:
+			controller.move(0, GUN_PRESETS[GUN_TYPE]['value'])
 		time.sleep(cooldown)
 
 def on_click(x, y, button, pressed):
-	global MOUSE_LEFT_DOWN
-	MOUSE_LEFT_DOWN = pressed
+	global MOUSE_LEFT_DOWN, MOUSE_RIGHT_DOWN
+	# mouse right state
+	if button == mouse.Button.left:
+		MOUSE_LEFT_DOWN = pressed
+	elif button == mouse.Button.right and pressed:
+		print 1
+		MOUSE_RIGHT_DOWN = not MOUSE_RIGHT_DOWN
 
 def on_scroll(x, y, dx, dy):
 	global GUN_TYPE, GUN_PRESETS
