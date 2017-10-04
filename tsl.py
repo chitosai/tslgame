@@ -5,10 +5,12 @@ TEST_MODE = True
 
 GUN_TYPE = 0
 GUN_PRESETS = [
-	{ 'name': 'M4/Scarl/AKM', 'value': 15 },
-	{ 'name': 'M16', 'value': 11 },
-	{ 'name': 'UMP9', 'value': 15 },
-	{ 'name': 'Uzi', 'value': 15 }
+	{ 'name': 'M4', 'delta': 15, 'cd': 0.086 },
+	{ 'name': 'M16', 'delta': 11, 'cd': 0.075 },
+	{ 'name': 'Scarl', 'delta': 15, 'cd': 0.096 },
+	{ 'name': 'AKM', 'delta': 15, 'cd': 0.1 },
+	{ 'name': 'UMP9', 'delta': 15, 'cd': 0.092 },
+	{ 'name': 'Uzi', 'delta': 15, 'cd': 0.048 }
 ]
 
 MOUSE_LEFT_DOWN = False
@@ -20,11 +22,10 @@ controller = mouse.Controller()
 
 def move_mouse():
 	global TEST_MODE, MOUSE_Y_DELTA, MOUSE_LEFT_DOWN, MOUSE_RIGHT_DOWN, GUN_PRESETS, GUN_TYPE
-	cooldown = 0.01
 	while True:
 		if MOUSE_LEFT_DOWN and MOUSE_RIGHT_DOWN:
-			controller.move(0, GUN_PRESETS[GUN_TYPE]['value'] if not TEST_MODE else MOUSE_Y_DELTA)
-		time.sleep(cooldown)
+			controller.move(0, GUN_PRESETS[GUN_TYPE]['delta'] if not TEST_MODE else MOUSE_Y_DELTA)
+		time.sleep(GUN_PRESETS[GUN_TYPE]['cd'] if not TEST_MODE else 0.1)
 
 t = threading.Thread(target=move_mouse)
 t.setDaemon(True)
@@ -34,11 +35,11 @@ t.start()
 # auto send click for M16A4
 def click_mouse():
 	global MOUSE_LEFT_DOWN, GUN_PRESETS, GUN_TYPE
-	cooldown = 0.2
+	cooldown = 0.24
 	while True:
-		if MOUSE_LEFT_DOWN and GUN_PRESETS[GUN_TYPE]['value'] == 'm16':
+		if MOUSE_LEFT_DOWN and GUN_PRESETS[GUN_TYPE]['name'] == 'm16':
 			controller.click(mouse.Button.left)
-			cooldown = Math.uniform(0, 1)
+			cooldown = Math.uniform(0.2, 0.5)
 		time.sleep(cooldown)
 
 t2 = threading.Thread(target=click_mouse)
