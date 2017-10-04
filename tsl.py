@@ -1,7 +1,7 @@
 import time, threading, random
 from pynput import mouse
 
-TEST_MODE = True
+TEST_MODE = False
 
 GUN_TYPE = 0
 GUN_PRESETS = [
@@ -15,6 +15,7 @@ GUN_PRESETS = [
 
 MOUSE_LEFT_DOWN = False
 MOUSE_RIGHT_DOWN = False
+CLICK_SENT_BY_SCRIPT = 0
 
 MOUSE_Y_DELTA = 15
 
@@ -34,12 +35,13 @@ t.start()
 # --
 # auto send click for M16A4
 def click_mouse():
-	global MOUSE_LEFT_DOWN, GUN_PRESETS, GUN_TYPE
-	cooldown = 0.24
+	global MOUSE_LEFT_DOWN, CLICK_SENT_BY_SCRIPT, GUN_PRESETS, GUN_TYPE
+	cooldown = 0.225
 	while True:
-		if MOUSE_LEFT_DOWN and GUN_PRESETS[GUN_TYPE]['name'] == 'm16':
+		if MOUSE_LEFT_DOWN and GUN_PRESETS[GUN_TYPE]['name'] == 'M16':
+			CLICK_SENT_BY_SCRIPT += 2
 			controller.click(mouse.Button.left)
-			cooldown = Math.uniform(0.2, 0.5)
+			cooldown = random.uniform(0.001, 0.225)
 		time.sleep(cooldown)
 
 t2 = threading.Thread(target=click_mouse)
@@ -49,9 +51,13 @@ t2.start()
 # --
 
 def on_click(x, y, button, pressed):
-	global MOUSE_LEFT_DOWN, MOUSE_RIGHT_DOWN
+	global MOUSE_LEFT_DOWN, MOUSE_RIGHT_DOWN, CLICK_SENT_BY_SCRIPT
 	if button == mouse.Button.left:
-		MOUSE_LEFT_DOWN = pressed
+		# don't handle auto-sent left down
+		if CLICK_SENT_BY_SCRIPT > 0:
+			CLICK_SENT_BY_SCRIPT -= 1
+		else:
+			MOUSE_LEFT_DOWN = pressed
 	elif button == mouse.Button.right and pressed:
 		# change mouse right state
 		MOUSE_RIGHT_DOWN = not MOUSE_RIGHT_DOWN
