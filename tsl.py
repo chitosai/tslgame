@@ -6,13 +6,10 @@ MOUSE_RIGHT_DOWN = False
 
 GUN_TYPE = 0
 GUN_PRESETS = [
-	{ 'name': 'm4', 'value': 5 },
-	{ 'name': 'm16', 'value': 5 },
-	{ 'name': 'AKM', 'value': 5 },
-	{ 'name': 'UMP9', 'value': 5 },
-	{ 'name': 'Uzi', 'value': 5 },
-	{ 'name': 'Groza', 'value': 5 },
-	{ 'name': 'Vector', 'value': 5 }
+	{ 'name': 'M4/Scarl/AKM', 'value': 15 },
+	{ 'name': 'M16', 'value': 11 },
+	{ 'name': 'UMP9', 'value': 15 },
+	{ 'name': 'Uzi', 'value': 15 }
 ]
 
 controller = mouse.Controller()
