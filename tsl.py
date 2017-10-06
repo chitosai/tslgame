@@ -26,18 +26,22 @@ controller = mouse.Controller()
 def init_keyboard():
 	def on_press(key):
 		global ON, TEST_MODE, MOUSE_Y_DELTA, GUN_TYPE, GUN_PRESETS
+
 		# turnOn/Off
 		if key == keyboard.Key.f7:
 			ON = not ON
 			print 'Program %s' % ('ON' if ON else 'OFF')
+
 		# do not handle other input when off
 		if not ON:
 			return True
+
 		# switch test mode
 		if key == keyboard.Key.f8:
 			TEST_MODE = not TEST_MODE
 			if TEST_MODE:
 				print 'Test mode %s' % ('ON' if TEST_MODE else 'OFF')
+
 		# page up
 		elif key == keyboard.Key.page_up:
 			if TEST_MODE:
@@ -46,6 +50,7 @@ def init_keyboard():
 			elif GUN_TYPE < len(GUN_PRESETS) - 1:
 				GUN_TYPE += 1
 				print 'Weapon mode switched to %s' % GUN_PRESETS[GUN_TYPE]['name']
+
 		# page down
 		elif key == keyboard.Key.page_down:
 			if TEST_MODE:
@@ -65,9 +70,9 @@ k.start()
 # --
 
 def move_mouse():
-	global TEST_MODE, MOUSE_Y_DELTA, MOUSE_LEFT_DOWN, MOUSE_RIGHT_DOWN, GUN_PRESETS, GUN_TYPE
+	global ON, TEST_MODE, MOUSE_Y_DELTA, MOUSE_LEFT_DOWN, MOUSE_RIGHT_DOWN, GUN_PRESETS, GUN_TYPE
 	while True:
-		if MOUSE_LEFT_DOWN and MOUSE_RIGHT_DOWN:
+		if ON and MOUSE_LEFT_DOWN and MOUSE_RIGHT_DOWN:
 			controller.move(0, GUN_PRESETS[GUN_TYPE]['delta'] if not TEST_MODE else MOUSE_Y_DELTA)
 		time.sleep(GUN_PRESETS[GUN_TYPE]['cd'] if not TEST_MODE else 0.1)
 
@@ -78,13 +83,13 @@ t.start()
 # --
 # auto send click for M16A4
 def click_mouse():
-	global MOUSE_LEFT_DOWN, CLICK_SENT_BY_SCRIPT, GUN_PRESETS, GUN_TYPE
-	cooldown = 0.225
+	global ON, MOUSE_LEFT_DOWN, CLICK_SENT_BY_SCRIPT, GUN_PRESETS, GUN_TYPE
+	cooldown = 0.125
 	while True:
-		if MOUSE_LEFT_DOWN and GUN_PRESETS[GUN_TYPE]['name'] == 'M16':
+		if ON and MOUSE_LEFT_DOWN and GUN_PRESETS[GUN_TYPE]['name'] == 'M16':
 			CLICK_SENT_BY_SCRIPT += 2
 			controller.click(mouse.Button.left)
-			cooldown = random.uniform(0.001, 0.225)
+			cooldown = random.uniform(0.001, 0.125)
 		time.sleep(cooldown)
 
 t2 = threading.Thread(target=click_mouse)
