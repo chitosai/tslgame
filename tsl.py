@@ -16,7 +16,6 @@ ON = False
 TEST_MODE = False
 
 MOUSE_LEFT_DOWN = False
-MOUSE_RIGHT_DOWN = False
 CLICK_SENT_BY_SCRIPT = 0
 
 MOUSE_Y_DELTA = 15
@@ -70,9 +69,9 @@ k.start()
 # --
 
 def move_mouse():
-	global ON, TEST_MODE, MOUSE_Y_DELTA, MOUSE_LEFT_DOWN, MOUSE_RIGHT_DOWN, GUN_PRESETS, GUN_TYPE
+	global ON, TEST_MODE, MOUSE_Y_DELTA, MOUSE_LEFT_DOWN, GUN_PRESETS, GUN_TYPE
 	while True:
-		if ON and MOUSE_LEFT_DOWN and MOUSE_RIGHT_DOWN:
+		if ON and MOUSE_LEFT_DOWN:
 			controller.move(0, GUN_PRESETS[GUN_TYPE]['delta'] if not TEST_MODE else MOUSE_Y_DELTA)
 		time.sleep(GUN_PRESETS[GUN_TYPE]['cd'] if not TEST_MODE else 0.1)
 
@@ -99,16 +98,13 @@ t2.start()
 # --
 
 def on_click(x, y, button, pressed):
-	global MOUSE_LEFT_DOWN, MOUSE_RIGHT_DOWN, CLICK_SENT_BY_SCRIPT
+	global MOUSE_LEFT_DOWN, CLICK_SENT_BY_SCRIPT
 	if button == mouse.Button.left:
 		# don't handle auto-sent left down
 		if CLICK_SENT_BY_SCRIPT > 0:
 			CLICK_SENT_BY_SCRIPT -= 1
 		else:
 			MOUSE_LEFT_DOWN = pressed
-	elif button == mouse.Button.right and pressed:
-		# change mouse right state
-		MOUSE_RIGHT_DOWN = not MOUSE_RIGHT_DOWN
 
 # listen
 with mouse.Listener(on_click=on_click) as listener:
